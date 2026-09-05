@@ -11,8 +11,23 @@ import "../styles/global.css";
     <meta name="generator" content={Astro.generator} />
     <title>Pacman Goo</title>
   </head>
-  <body class="flex min-h-screen items-center justify-center bg-black">
-    <canvas id="game" width="800" height="600"></canvas>
+  <body class="flex min-h-screen flex-col items-center justify-center gap-4 bg-black">
+    <div class="flex gap-2">
+      <button id="btn-play" class="rounded bg-neutral-800 px-3 py-1 text-white">Play</button>
+      <button id="btn-menu" class="rounded bg-neutral-800 px-3 py-1 text-white">Menu</button>
+      <button id="btn-pausa" class="rounded bg-neutral-800 px-3 py-1 text-white">Pausa</button>
+      <button id="btn-verlog" class="rounded bg-neutral-800 px-3 py-1 text-white">Ver log</button>
+    </div>
+
+    <div class="flex gap-4">
+      <canvas id="game" width="800" height="600"></canvas>
+
+      <pre
+        id="debug"
+        hidden
+        class="self-start rounded bg-neutral-900 p-4 font-mono text-xs text-green-400">
+      </pre>
+    </div>
 
     <script>
       import "../game/main";
