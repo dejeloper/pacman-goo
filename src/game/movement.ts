@@ -21,7 +21,8 @@ function canMoveTo(state: Game, posicion: Posicion): boolean {
     return false;
   }
 
-  return mapa.celdas[posicion.y][posicion.x] !== Celda.Pared;
+  const celda = mapa.celdas[posicion.y][posicion.x];
+  return celda !== Celda.Pared && celda !== Celda.Border;
 }
 
 export function movePacman(state: Game): void {
