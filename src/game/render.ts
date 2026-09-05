@@ -1,7 +1,7 @@
 import type { Game } from "./game";
 import { Celda, TAMANO_CELDA } from "./mapa";
 
-function dibujarMapa(ctx: CanvasRenderingContext2D, state: Game): void {
+function drawMap(ctx: CanvasRenderingContext2D, state: Game): void {
   const { celdas } = state.mapa;
 
   for (let fila = 0; fila < celdas.length; fila++) {
@@ -36,7 +36,7 @@ function dibujarMapa(ctx: CanvasRenderingContext2D, state: Game): void {
   }
 }
 
-function dibujarPacman(ctx: CanvasRenderingContext2D, state: Game): void {
+function drawPacman(ctx: CanvasRenderingContext2D, state: Game): void {
   const { x, y } = state.pacman.posicion;
 
   ctx.fillStyle = "yellow";
@@ -55,6 +55,6 @@ export function render(ctx: CanvasRenderingContext2D, state: Game): void {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-  dibujarMapa(ctx, state);
-  dibujarPacman(ctx, state);
+  drawMap(ctx, state);
+  drawPacman(ctx, state);
 }
