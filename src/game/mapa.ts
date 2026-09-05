@@ -1,3 +1,5 @@
+export const TAMANO_CELDA = 20;
+
 export enum Celda {
   Vacia = 0,
   Pared = 1,

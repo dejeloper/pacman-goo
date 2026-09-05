@@ -15,13 +15,7 @@ import "../styles/global.css";
     <canvas id="game" width="800" height="600"></canvas>
 
     <script>
-      const canvas = document.getElementById("game") as HTMLCanvasElement;
-      const ctx = canvas.getContext("2d");
-
-      if (ctx) {
-        ctx.fillStyle = "black";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
+      import "../game/main";
     </script>
   </body>
 </html>
