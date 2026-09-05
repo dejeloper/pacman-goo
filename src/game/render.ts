@@ -1,8 +1,8 @@
-import type { Game } from "./game";
-import { Celda, TAMANO_CELDA } from "./mapa";
+import type {Game} from "./game";
+import {Celda, TAMANO_CELDA} from "./mapa";
 
 function drawMap(ctx: CanvasRenderingContext2D, state: Game): void {
-  const { celdas } = state.mapa;
+  const {celdas} = state.mapa;
 
   for (let fila = 0; fila < celdas.length; fila++) {
     for (let columna = 0; columna < celdas[fila].length; columna++) {
@@ -15,6 +15,10 @@ function drawMap(ctx: CanvasRenderingContext2D, state: Game): void {
       ctx.fillRect(x, y, TAMANO_CELDA, TAMANO_CELDA);
 
       switch (celda) {
+        case Celda.Border:
+          ctx.fillStyle = "#949494";
+          ctx.fillRect(x, y, TAMANO_CELDA, TAMANO_CELDA);
+          break;
         case Celda.Pared:
           ctx.fillStyle = "#1919a6";
           ctx.fillRect(x, y, TAMANO_CELDA, TAMANO_CELDA);
@@ -37,7 +41,7 @@ function drawMap(ctx: CanvasRenderingContext2D, state: Game): void {
 }
 
 function drawPacman(ctx: CanvasRenderingContext2D, state: Game): void {
-  const { x, y } = state.pacman.posicion;
+  const {x, y} = state.pacman.posicion;
 
   ctx.fillStyle = "yellow";
   ctx.beginPath();

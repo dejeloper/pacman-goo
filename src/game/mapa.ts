@@ -6,6 +6,7 @@ export enum Celda {
   Punto = 2,
   PuntoGrande = 3,
   Tunel = 4,
+  Border = 99
 }
 
 export interface Posicion {
