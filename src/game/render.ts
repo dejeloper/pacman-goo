@@ -36,9 +36,25 @@ function dibujarMapa(ctx: CanvasRenderingContext2D, state: Game): void {
   }
 }
 
+function dibujarPacman(ctx: CanvasRenderingContext2D, state: Game): void {
+  const { x, y } = state.pacman.posicion;
+
+  ctx.fillStyle = "yellow";
+  ctx.beginPath();
+  ctx.arc(
+    x * TAMANO_CELDA + TAMANO_CELDA / 2,
+    y * TAMANO_CELDA + TAMANO_CELDA / 2,
+    TAMANO_CELDA / 2,
+    0,
+    Math.PI * 2,
+  );
+  ctx.fill();
+}
+
 export function render(ctx: CanvasRenderingContext2D, state: Game): void {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
   dibujarMapa(ctx, state);
+  dibujarPacman(ctx, state);
 }
