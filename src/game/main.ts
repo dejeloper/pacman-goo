@@ -4,6 +4,7 @@ import {buildGeneralMap} from "./baseMap";
 import {buildClassicMap} from "./classicMap";
 import {buildGoogleMap} from "./googleMap";
 import {listenKeyboard} from "./keyboard";
+import {startGameLoop} from "./loop";
 import {Celda} from "./mapa";
 import type {Game} from "./game";
 
@@ -59,6 +60,7 @@ const state: Game = {
   mapa: {ancho, alto, celdas, tamanoCelda, colores},
   pacman: {
     posicion: {x: 1, y: 1},
+    posicionAnterior: {x: 1, y: 1},
     direccion: "derecha",
     direccionSiguiente: "derecha",
     velocidad: 0,
@@ -74,8 +76,10 @@ if (ctx) {
   render(ctx, state);
   renderDebug(state);
 
-  listenKeyboard(state, () => {
-    render(ctx, state);
+  listenKeyboard(state);
+
+  startGameLoop(state, (progreso) => {
+    render(ctx, state, progreso);
     renderDebug(state);
   });
 

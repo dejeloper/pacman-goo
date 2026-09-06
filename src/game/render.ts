@@ -64,9 +64,12 @@ function drawMap(ctx: CanvasRenderingContext2D, state: Game): void {
   }
 }
 
-function drawPacman(ctx: CanvasRenderingContext2D, state: Game): void {
-  const {x, y} = state.pacman.posicion;
+function drawPacman(ctx: CanvasRenderingContext2D, state: Game, progreso: number): void {
+  const {posicion, posicionAnterior} = state.pacman;
   const {tamanoCelda} = state.mapa;
+
+  const x = posicionAnterior.x + (posicion.x - posicionAnterior.x) * progreso;
+  const y = posicionAnterior.y + (posicion.y - posicionAnterior.y) * progreso;
 
   ctx.fillStyle = "yellow";
   ctx.beginPath();
@@ -80,10 +83,10 @@ function drawPacman(ctx: CanvasRenderingContext2D, state: Game): void {
   ctx.fill();
 }
 
-export function render(ctx: CanvasRenderingContext2D, state: Game): void {
+export function render(ctx: CanvasRenderingContext2D, state: Game, progreso = 1): void {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
   drawMap(ctx, state);
-  drawPacman(ctx, state);
+  drawPacman(ctx, state, progreso);
 }

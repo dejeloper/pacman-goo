@@ -1,6 +1,6 @@
 import type { Game } from "./game";
 import type { Direccion } from "./pacman";
-import { movePacman } from "./movement";
+import { canMoveTowards } from "./movement";
 
 const TECLAS: Record<string, Direccion> = {
   ArrowUp: "arriba",
@@ -13,14 +13,12 @@ const TECLAS: Record<string, Direccion> = {
   d: "derecha",
 };
 
-export function listenKeyboard(state: Game, onMove: () => void): void {
+export function listenKeyboard(state: Game): void {
   document.addEventListener("keydown", (evento) => {
     const direccion = TECLAS[evento.key];
     if (!direccion) return;
+    if (!canMoveTowards(state, direccion)) return;
 
-    state.pacman.direccion = direccion;
     state.pacman.direccionSiguiente = direccion;
-    movePacman(state);
-    onMove();
   });
 }
