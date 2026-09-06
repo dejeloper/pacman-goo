@@ -1,6 +1,17 @@
 import type {Game} from "./game";
 import {Celda} from "./mapa";
 import {debbug} from "./debug";
+import type {Direccion} from "./pacman";
+
+const ANGULO_DIRECCION: Record<Direccion, number> = {
+  derecha: 0,
+  abajo: Math.PI / 2,
+  izquierda: Math.PI,
+  arriba: -Math.PI / 2,
+};
+
+const BOCA_MAXIMA = Math.PI / 4;
+const BOCA_QUIETO = Math.PI / 6;
 
 function drawMap(ctx: CanvasRenderingContext2D, state: Game): void {
   const {celdas, tamanoCelda: TAMANO_CELDA, colores} = state.mapa;
@@ -65,21 +76,25 @@ function drawMap(ctx: CanvasRenderingContext2D, state: Game): void {
 }
 
 function drawPacman(ctx: CanvasRenderingContext2D, state: Game, progreso: number): void {
-  const {posicion, posicionAnterior} = state.pacman;
+  const {posicion, posicionAnterior, direccion} = state.pacman;
   const {tamanoCelda} = state.mapa;
 
   const x = posicionAnterior.x + (posicion.x - posicionAnterior.x) * progreso;
   const y = posicionAnterior.y + (posicion.y - posicionAnterior.y) * progreso;
 
+  const cx = x * tamanoCelda + tamanoCelda / 2;
+  const cy = y * tamanoCelda + tamanoCelda / 2;
+  const radio = tamanoCelda / 2;
+
+  const seMovio = posicionAnterior.x !== posicion.x || posicionAnterior.y !== posicion.y;
+  const boca = seMovio ? BOCA_MAXIMA * Math.abs(Math.sin(progreso * Math.PI)) : BOCA_QUIETO;
+  const anguloBase = ANGULO_DIRECCION[direccion];
+
   ctx.fillStyle = "yellow";
   ctx.beginPath();
-  ctx.arc(
-    x * tamanoCelda + tamanoCelda / 2,
-    y * tamanoCelda + tamanoCelda / 2,
-    tamanoCelda / 2,
-    0,
-    Math.PI * 2,
-  );
+  ctx.moveTo(cx, cy);
+  ctx.arc(cx, cy, radio, anguloBase + boca, anguloBase - boca + Math.PI * 2);
+  ctx.closePath();
   ctx.fill();
 }
 

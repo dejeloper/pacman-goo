@@ -58,20 +58,23 @@ export function movePacman(state: Game): void {
   if (state.estado !== "jugando") return;
 
   const { pacman } = state;
+
+  // Se come el punto de la celda a la que recién termina de llegar visualmente
+  // (no la celda destino, que todavía no se alcanzó en pantalla).
+  earnPoint(state, pacman.posicion);
+
   pacman.posicionAnterior = pacman.posicion;
 
   const destinoGiro = destinationAt(pacman.posicion, pacman.direccionSiguiente);
   if (canMoveTo(state, destinoGiro)) {
     pacman.direccion = pacman.direccionSiguiente;
     pacman.posicion = destinoGiro;
-    earnPoint(state, destinoGiro);
     return;
   }
 
   const destinoRecto = destinationAt(pacman.posicion, pacman.direccion);
   if (canMoveTo(state, destinoRecto)) {
     pacman.posicion = destinoRecto;
-    earnPoint(state, destinoRecto);
   }
 }
 
