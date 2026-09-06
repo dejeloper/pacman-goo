@@ -85,6 +85,19 @@ function drawMap(ctx: CanvasRenderingContext2D, state: Game): void {
             TAMANO_CELDA - TAMANO_CELDA / 4,
           );
           break;
+        case Celda.Transportador:
+          ctx.strokeStyle = "#ff00ff";
+          ctx.lineWidth = TAMANO_CELDA / 10;
+          ctx.beginPath();
+          ctx.arc(
+            x + TAMANO_CELDA / 2,
+            y + TAMANO_CELDA / 2,
+            TAMANO_CELDA / 3,
+            0,
+            Math.PI * 2,
+          );
+          ctx.stroke();
+          break;
       }
     }
   }

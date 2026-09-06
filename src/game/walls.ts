@@ -21,6 +21,18 @@ export function drawWall(
   }
 }
 
+export function buildTeleportPair(
+  celdas: Celda[][],
+  teletransportes: Record<string, Posicion>,
+  a: Posicion,
+  b: Posicion,
+): void {
+  celdas[a.y][a.x] = Celda.Transportador;
+  celdas[b.y][b.x] = Celda.Transportador;
+  teletransportes[`${a.x}-${a.y}`] = b;
+  teletransportes[`${b.x}-${b.y}`] = a;
+}
+
 export function buildBorderWalls(
   celdas: Celda[][],
   ancho: number,

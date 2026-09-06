@@ -4,6 +4,7 @@ export enum Celda {
   Punto = 2,
   PuntoGrande = 3,
   Tunel = 4,
+  Transportador = 5,
   Border = 99,
 }
 
@@ -18,4 +19,5 @@ export interface Mapa {
   celdas: Celda[][];
   tamanoCelda: number;
   colores: Record<string, string>;
+  teletransportes: Record<string, Posicion>;
 }
