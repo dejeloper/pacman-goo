@@ -1,24 +1,62 @@
 import {render} from "./render";
 import {renderDebug, toggleDebugPanel} from "./debug";
-import {movePacman} from "./movement";
-import {Celda, TAMANO_CELDA} from "./mapa";
+import {buildGeneralMap} from "./baseMap";
+import {buildClassicMap} from "./classicMap";
+import {buildGoogleMap} from "./googleMap";
+import {listenKeyboard} from "./keyboard";
+import {Celda} from "./mapa";
 import type {Game} from "./game";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d");
 
-document.getElementById("btn-verlog")?.addEventListener("click", toggleDebugPanel);
+type Diseno = "base" | "classic" | "google";
+type DisenoConfig = {
+  anchoCeldas: number;
+  altoCeldas: number;
+  tamanoCelda: number;
+  construirMapa: (celdas: Celda[][], ancho: number, alto: number, colores: Record<string, string>) => void;
+};
 
-const ancho = canvas.width / TAMANO_CELDA;
-const alto = canvas.height / TAMANO_CELDA;
+const disenos: Record<Diseno, DisenoConfig> = {
+  base: {
+    anchoCeldas: 28,
+    altoCeldas: 31,
+    tamanoCelda: 20,
+    construirMapa: buildClassicMap
+  },
+  classic: {
+    anchoCeldas: 40,
+    altoCeldas: 30,
+    tamanoCelda: 40,
+    construirMapa: buildGeneralMap
+  },
+  google: {
+    anchoCeldas: 58,
+    altoCeldas: 17,
+    tamanoCelda: 20,
+    construirMapa: buildGoogleMap
+  },
+};
+
+const diseno: Diseno = "google";
+const {anchoCeldas, altoCeldas, tamanoCelda, construirMapa} = disenos[diseno];
+
+canvas.width = anchoCeldas * tamanoCelda;
+canvas.height = altoCeldas * tamanoCelda;
+
+const ancho = anchoCeldas;
+const alto = altoCeldas;
 
 const celdas: Celda[][] = Array.from({length: alto}, () =>
   Array.from({length: ancho}, () => Celda.Punto),
 );
 
+const colores: Record<string, string> = {};
+construirMapa(celdas, ancho, alto, colores);
 
 const state: Game = {
-  mapa: {ancho, alto, celdas},
+  mapa: {ancho, alto, celdas, tamanoCelda, colores},
   pacman: {
     posicion: {x: 1, y: 1},
     direccion: "derecha",
@@ -29,27 +67,21 @@ const state: Game = {
   puntos: {total: 0, posicionesRestantes: []},
   vidas: {actuales: 3, maximas: 3},
   nivel: {actual: 1, velocidadFantasmas: 0},
-  estado: "menu",
+  estado: "jugando",
 };
-
-const PASOS_POR_CICLO = 20;
-const MS_POR_PASO = 500;
-let pasos = 0;
 
 if (ctx) {
   render(ctx, state);
   renderDebug(state);
 
-  setInterval(() => {
-    movePacman(state);
-    pasos++;
-
-    if (pasos >= PASOS_POR_CICLO) {
-      state.pacman.posicion = {x: 1, y: 1};
-      pasos = 0;
-    }
-
+  listenKeyboard(state, () => {
     render(ctx, state);
     renderDebug(state);
-  }, MS_POR_PASO);
+  });
+
+  document.getElementById("btn-verlog")?.addEventListener("click", () => {
+    toggleDebugPanel();
+    render(ctx, state);
+    renderDebug(state);
+  });
 }
