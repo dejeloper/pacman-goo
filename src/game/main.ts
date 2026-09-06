@@ -1,5 +1,6 @@
 import {render} from "./render";
 import {renderDebug, toggleDebugPanel} from "./debug";
+import {renderHud} from "./hud";
 import {buildGeneralMap} from "./baseMap";
 import {buildClassicMap} from "./classicMap";
 import {buildGoogleMap} from "./googleMap";
@@ -75,17 +76,25 @@ const state: Game = {
 if (ctx) {
   render(ctx, state);
   renderDebug(state);
+  renderHud(state);
 
   listenKeyboard(state);
 
   startGameLoop(state, (progreso) => {
     render(ctx, state, progreso);
     renderDebug(state);
+    renderHud(state);
   });
 
   document.getElementById("btn-verlog")?.addEventListener("click", () => {
     toggleDebugPanel();
     render(ctx, state);
     renderDebug(state);
+  });
+
+  const debugModal = document.getElementById("debug-modal");
+  debugModal?.addEventListener("click", (evento) => {
+    if (evento.target !== debugModal) return;
+    toggleDebugPanel();
   });
 }
