@@ -1,17 +1,17 @@
-import type { Game } from "./game";
-import { Celda, type Posicion } from "./mapa";
-import type { Direccion } from "./pacman";
-import { INTERVALO_MS } from "./speed";
+import type {Game} from "./game";
+import {Celda, type Posicion} from "./mapa";
+import type {Direccion} from "./pacman";
+import {INTERVALO_MS} from "./speed";
 
 const DELTAS: Record<Direccion, Posicion> = {
-  arriba: { x: 0, y: -1 },
-  abajo: { x: 0, y: 1 },
-  izquierda: { x: -1, y: 0 },
-  derecha: { x: 1, y: 0 },
+  arriba: {x: 0, y: -1},
+  abajo: {x: 0, y: 1},
+  izquierda: {x: -1, y: 0},
+  derecha: {x: 1, y: 0},
 };
 
 function canMoveTo(state: Game, posicion: Posicion): boolean {
-  const { mapa } = state;
+  const {mapa} = state;
 
   if (
     posicion.y < 0 ||
@@ -28,7 +28,7 @@ function canMoveTo(state: Game, posicion: Posicion): boolean {
 
 function destinationAt(posicion: Posicion, direccion: Direccion): Posicion {
   const delta = DELTAS[direccion];
-  return { x: posicion.x + delta.x, y: posicion.y + delta.y };
+  return {x: posicion.x + delta.x, y: posicion.y + delta.y};
 }
 
 function getTurnLookahead(): number {
@@ -38,7 +38,7 @@ function getTurnLookahead(): number {
 }
 
 export function canMoveTowards(state: Game, direccion: Direccion): boolean {
-  const { pacman } = state;
+  const {pacman} = state;
   let posicion = pacman.posicion;
   const turnLookahead = getTurnLookahead();
 
@@ -57,10 +57,8 @@ export function canMoveTowards(state: Game, direccion: Direccion): boolean {
 export function movePacman(state: Game): void {
   if (state.estado !== "jugando") return;
 
-  const { pacman } = state;
+  const {pacman} = state;
 
-  // Se come el punto de la celda a la que recién termina de llegar visualmente
-  // (no la celda destino, que todavía no se alcanzó en pantalla).
   earnPoint(state, pacman.posicion);
 
   pacman.posicionAnterior = pacman.posicion;
@@ -78,11 +76,17 @@ export function movePacman(state: Game): void {
   }
 }
 
+const VALOR_PUNTO = 1;
+const VALOR_PUNTO_GRANDE = 10;
+export const VALOR_FRUTA = 50;
+export const VALOR_FANTASMA = 100;
+
 function earnPoint(state: Game, posicion: Posicion): void {
-  const { mapa } = state;
+  const {mapa, puntos} = state;
   const celda = mapa.celdas[posicion.y][posicion.x];
 
   if (celda !== Celda.Punto && celda !== Celda.PuntoGrande) return;
 
+  puntos.total += celda === Celda.PuntoGrande ? VALOR_PUNTO_GRANDE : VALOR_PUNTO;
   mapa.celdas[posicion.y][posicion.x] = Celda.Vacia;
 }
