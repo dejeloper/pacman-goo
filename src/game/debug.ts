@@ -25,9 +25,9 @@ export function renderDebug(state: Game): void {
 }
 
 export function toggleDebugPanel(): void {
-  const elemento = document.getElementById("debug");
-  if (!elemento) return;
+  const modal = document.getElementById("debug-modal");
+  if (!modal) return;
 
   debbug = !debbug;
-  elemento.hidden = !elemento.hidden;
+  modal.hidden = !modal.hidden;
 }
