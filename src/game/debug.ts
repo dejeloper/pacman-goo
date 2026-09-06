@@ -1,6 +1,7 @@
 import type {Game} from "./game";
 
-// DEBUG: panel temporal de estado en vivo, eliminar junto con el <pre id="debug"> del index.astro
+export let debbug = false;
+
 export function renderDebug(state: Game): void {
   const elemento = document.getElementById("debug");
   if (!elemento) return;
@@ -23,10 +24,10 @@ export function renderDebug(state: Game): void {
 
 }
 
-// DEBUG: muestra/oculta el <pre id="debug">, botón "Ver log"
 export function toggleDebugPanel(): void {
   const elemento = document.getElementById("debug");
   if (!elemento) return;
 
+  debbug = !debbug;
   elemento.hidden = !elemento.hidden;
 }

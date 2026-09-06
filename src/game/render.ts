@@ -1,8 +1,9 @@
 import type {Game} from "./game";
-import {Celda, TAMANO_CELDA} from "./mapa";
+import {Celda} from "./mapa";
+import {debbug} from "./debug";
 
 function drawMap(ctx: CanvasRenderingContext2D, state: Game): void {
-  const {celdas} = state.mapa;
+  const {celdas, tamanoCelda: TAMANO_CELDA, colores} = state.mapa;
 
   for (let fila = 0; fila < celdas.length; fila++) {
     for (let columna = 0; columna < celdas[fila].length; columna++) {
@@ -16,24 +17,47 @@ function drawMap(ctx: CanvasRenderingContext2D, state: Game): void {
 
       switch (celda) {
         case Celda.Border:
-          ctx.fillStyle = "#949494";
+          ctx.fillStyle = debbug ? "#949494" : "#1919a6";
           ctx.fillRect(x, y, TAMANO_CELDA, TAMANO_CELDA);
+          if (debbug) {
+            ctx.fillStyle = "black";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            const ultimaColumna = celdas[fila].length - 1;
+            const ultimaFila = celdas.length - 1;
+            const mostrarColumna = columna !== 0 && columna !== ultimaColumna;
+            const mostrarFila = fila !== 0 && fila !== ultimaFila;
+            const texto = [mostrarColumna ? columna : null, mostrarFila ? fila : null]
+              .filter((valor) => valor !== null)
+              .join("-");
+            ctx.fillText(texto, x + TAMANO_CELDA / 2, y + TAMANO_CELDA / 2);
+          }
           break;
         case Celda.Pared:
-          ctx.fillStyle = "#1919a6";
+          ctx.fillStyle = colores[`${columna}-${fila}`] ?? "#1919a6";
           ctx.fillRect(x, y, TAMANO_CELDA, TAMANO_CELDA);
           break;
         case Celda.Punto:
           ctx.fillStyle = "white";
           ctx.beginPath();
-          ctx.arc(x + TAMANO_CELDA / 2, y + TAMANO_CELDA / 2, 2, 0, Math.PI * 2);
+          ctx.arc(x + TAMANO_CELDA / 2, y + TAMANO_CELDA / 2, TAMANO_CELDA / 10, 0, Math.PI * 2);
           ctx.fill();
           break;
         case Celda.PuntoGrande:
           ctx.fillStyle = "white";
           ctx.beginPath();
-          ctx.arc(x + TAMANO_CELDA / 2, y + TAMANO_CELDA / 2, 5, 0, Math.PI * 2);
+          ctx.arc(x + TAMANO_CELDA / 2, y + TAMANO_CELDA / 2, TAMANO_CELDA / 4, 0, Math.PI * 2);
           ctx.fill();
+          break;
+        case Celda.Tunel:
+          ctx.strokeStyle = "#00e5ff";
+          ctx.lineWidth = TAMANO_CELDA / 8;
+          ctx.strokeRect(
+            x + TAMANO_CELDA / 8,
+            y + TAMANO_CELDA / 8,
+            TAMANO_CELDA - TAMANO_CELDA / 4,
+            TAMANO_CELDA - TAMANO_CELDA / 4,
+          );
           break;
       }
     }
@@ -42,13 +66,14 @@ function drawMap(ctx: CanvasRenderingContext2D, state: Game): void {
 
 function drawPacman(ctx: CanvasRenderingContext2D, state: Game): void {
   const {x, y} = state.pacman.posicion;
+  const {tamanoCelda} = state.mapa;
 
   ctx.fillStyle = "yellow";
   ctx.beginPath();
   ctx.arc(
-    x * TAMANO_CELDA + TAMANO_CELDA / 2,
-    y * TAMANO_CELDA + TAMANO_CELDA / 2,
-    TAMANO_CELDA / 2,
+    x * tamanoCelda + tamanoCelda / 2,
+    y * tamanoCelda + tamanoCelda / 2,
+    tamanoCelda / 2,
     0,
     Math.PI * 2,
   );
