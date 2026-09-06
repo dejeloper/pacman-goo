@@ -1,4 +1,4 @@
-import type {Game} from "./game";
+import type { Game } from "./game";
 
 export let debbug = false;
 
@@ -19,9 +19,8 @@ export function renderDebug(state: Game): void {
     2,
   );
   console.clear();
-  const {posicion, direccion, direccionSiguiente, velocidad} = state.pacman;
+  const { posicion, direccion, direccionSiguiente, velocidad } = state.pacman;
   console.log(posicion, direccion, direccionSiguiente, velocidad);
-
 }
 
 export function toggleDebugPanel(): void {

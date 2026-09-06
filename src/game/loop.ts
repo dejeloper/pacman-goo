@@ -1,8 +1,11 @@
-import type {Game} from "./game";
-import {movePacman} from "./movement";
-import {INTERVALO_MS} from "./speed";
+import type { Game } from "./game";
+import { movePacman } from "./movement";
+import { INTERVALO_MS } from "./speed";
 
-export function startGameLoop(state: Game, onFrame: (progreso: number) => void): void {
+export function startGameLoop(
+  state: Game,
+  onFrame: (progreso: number) => void,
+): void {
   let ultimoTick = performance.now();
 
   function frame(ahora: number): void {

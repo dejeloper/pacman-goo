@@ -1,7 +1,7 @@
-import type {Game} from "./game";
-import {Celda} from "./mapa";
-import {debbug} from "./debug";
-import type {Direccion} from "./pacman";
+import type { Game } from "./game";
+import { Celda } from "./mapa";
+import { debbug } from "./debug";
+import type { Direccion } from "./pacman";
 
 const ANGULO_DIRECCION: Record<Direccion, number> = {
   derecha: 0,
@@ -14,7 +14,7 @@ const BOCA_MAXIMA = Math.PI / 4;
 const BOCA_QUIETO = Math.PI / 6;
 
 function drawMap(ctx: CanvasRenderingContext2D, state: Game): void {
-  const {celdas, tamanoCelda: TAMANO_CELDA, colores} = state.mapa;
+  const { celdas, tamanoCelda: TAMANO_CELDA, colores } = state.mapa;
 
   for (let fila = 0; fila < celdas.length; fila++) {
     for (let columna = 0; columna < celdas[fila].length; columna++) {
@@ -38,7 +38,10 @@ function drawMap(ctx: CanvasRenderingContext2D, state: Game): void {
             const ultimaFila = celdas.length - 1;
             const mostrarColumna = columna !== 0 && columna !== ultimaColumna;
             const mostrarFila = fila !== 0 && fila !== ultimaFila;
-            const texto = [mostrarColumna ? columna : null, mostrarFila ? fila : null]
+            const texto = [
+              mostrarColumna ? columna : null,
+              mostrarFila ? fila : null,
+            ]
               .filter((valor) => valor !== null)
               .join("-");
             ctx.fillText(texto, x + TAMANO_CELDA / 2, y + TAMANO_CELDA / 2);
@@ -51,13 +54,25 @@ function drawMap(ctx: CanvasRenderingContext2D, state: Game): void {
         case Celda.Punto:
           ctx.fillStyle = "white";
           ctx.beginPath();
-          ctx.arc(x + TAMANO_CELDA / 2, y + TAMANO_CELDA / 2, TAMANO_CELDA / 10, 0, Math.PI * 2);
+          ctx.arc(
+            x + TAMANO_CELDA / 2,
+            y + TAMANO_CELDA / 2,
+            TAMANO_CELDA / 10,
+            0,
+            Math.PI * 2,
+          );
           ctx.fill();
           break;
         case Celda.PuntoGrande:
           ctx.fillStyle = "white";
           ctx.beginPath();
-          ctx.arc(x + TAMANO_CELDA / 2, y + TAMANO_CELDA / 2, TAMANO_CELDA / 4, 0, Math.PI * 2);
+          ctx.arc(
+            x + TAMANO_CELDA / 2,
+            y + TAMANO_CELDA / 2,
+            TAMANO_CELDA / 4,
+            0,
+            Math.PI * 2,
+          );
           ctx.fill();
           break;
         case Celda.Tunel:
@@ -75,9 +90,13 @@ function drawMap(ctx: CanvasRenderingContext2D, state: Game): void {
   }
 }
 
-function drawPacman(ctx: CanvasRenderingContext2D, state: Game, progreso: number): void {
-  const {posicion, posicionAnterior, direccion} = state.pacman;
-  const {tamanoCelda} = state.mapa;
+function drawPacman(
+  ctx: CanvasRenderingContext2D,
+  state: Game,
+  progreso: number,
+): void {
+  const { posicion, posicionAnterior, direccion } = state.pacman;
+  const { tamanoCelda } = state.mapa;
 
   const x = posicionAnterior.x + (posicion.x - posicionAnterior.x) * progreso;
   const y = posicionAnterior.y + (posicion.y - posicionAnterior.y) * progreso;
@@ -86,8 +105,11 @@ function drawPacman(ctx: CanvasRenderingContext2D, state: Game, progreso: number
   const cy = y * tamanoCelda + tamanoCelda / 2;
   const radio = tamanoCelda / 2;
 
-  const seMovio = posicionAnterior.x !== posicion.x || posicionAnterior.y !== posicion.y;
-  const boca = seMovio ? BOCA_MAXIMA * Math.abs(Math.sin(progreso * Math.PI)) : BOCA_QUIETO;
+  const seMovio =
+    posicionAnterior.x !== posicion.x || posicionAnterior.y !== posicion.y;
+  const boca = seMovio
+    ? BOCA_MAXIMA * Math.abs(Math.sin(progreso * Math.PI))
+    : BOCA_QUIETO;
   const anguloBase = ANGULO_DIRECCION[direccion];
 
   ctx.fillStyle = "yellow";
@@ -98,7 +120,11 @@ function drawPacman(ctx: CanvasRenderingContext2D, state: Game, progreso: number
   ctx.fill();
 }
 
-export function render(ctx: CanvasRenderingContext2D, state: Game, progreso = 1): void {
+export function render(
+  ctx: CanvasRenderingContext2D,
+  state: Game,
+  progreso = 1,
+): void {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 

@@ -1,4 +1,4 @@
-import type {Game} from "./game";
+import type { Game } from "./game";
 
 export function renderHud(state: Game): void {
   const puntajeElemento = document.getElementById("puntaje-valor");

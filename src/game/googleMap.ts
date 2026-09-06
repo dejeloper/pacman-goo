@@ -1,5 +1,5 @@
-import {Celda} from "./mapa";
-import {drawWall, buildBorderWalls} from "./walls";
+import { Celda } from "./mapa";
+import { drawWall, buildBorderWalls } from "./walls";
 
 const NOMBRES_COLORES: Record<string, string> = {
   azul: "#4285f4",
@@ -21,20 +21,20 @@ export function buildGoogleMap(
     2: [
       [2, 4],
       [6, 14, "azul"],
-      [16, 30,],
+      [16, 30],
       [32, 39],
       [41, 42, "verde"],
-      [44, 48,],
-      [50, 55,],
+      [44, 48],
+      [50, 55],
     ],
     3: [
-      [2, 4,],
+      [2, 4],
       [6, 14, "azul"],
-      [16, 30,],
+      [16, 30],
       [32, 39],
       [41, 42, "verde"],
-      [44, 48,],
-      [50, 55,],
+      [44, 48],
+      [50, 55],
     ],
     4: [
       [6, 7, "azul"],
@@ -141,7 +141,7 @@ export function buildGoogleMap(
       [16, 30],
       [32, 39],
       [41, 42],
-      [44, 48,],
+      [44, 48],
       [50, 55],
     ],
     14: [
@@ -150,7 +150,7 @@ export function buildGoogleMap(
       [16, 30],
       [32, 39],
       [41, 42],
-      [44, 48,],
+      [44, 48],
       [50, 55],
     ],
     15: [],
@@ -158,10 +158,15 @@ export function buildGoogleMap(
 
   for (const [fila, tramos] of Object.entries(tramosPorFila)) {
     for (const [desde, hasta, color] of tramos) {
-      drawWall(celdas, {x: desde, y: Number(fila)}, {x: hasta, y: Number(fila)});
+      drawWall(
+        celdas,
+        { x: desde, y: Number(fila) },
+        { x: hasta, y: Number(fila) },
+      );
 
       for (let x = desde; x <= hasta; x++) {
-        colores[`${x}-${fila}`] = (color && NOMBRES_COLORES[color]) ?? "#1919a6";
+        colores[`${x}-${fila}`] =
+          (color && NOMBRES_COLORES[color]) ?? "#1919a6";
       }
     }
   }
@@ -194,7 +199,12 @@ export function buildGoogleMap(
   };
   for (const [fila, tramos] of Object.entries(tramosPorFilaVacia)) {
     for (const [desde, hasta] of tramos) {
-      drawWall(celdas, {x: desde, y: Number(fila)}, {x: hasta, y: Number(fila)}, Celda.Vacia);
+      drawWall(
+        celdas,
+        { x: desde, y: Number(fila) },
+        { x: hasta, y: Number(fila) },
+        Celda.Vacia,
+      );
     }
   }
 
@@ -203,11 +213,8 @@ export function buildGoogleMap(
     2: [],
     3: [],
     4: [],
-    5: [
-      [34, 37],
-    ],
-    6: [
-      [34, 37],],
+    5: [[34, 37]],
+    6: [[34, 37]],
     7: [],
     8: [],
     9: [],
@@ -220,7 +227,12 @@ export function buildGoogleMap(
   };
   for (const [fila, tramos] of Object.entries(tramosPorFilaTunel)) {
     for (const [desde, hasta] of tramos) {
-      drawWall(celdas, {x: desde, y: Number(fila)}, {x: hasta, y: Number(fila)}, Celda.Tunel);
+      drawWall(
+        celdas,
+        { x: desde, y: Number(fila) },
+        { x: hasta, y: Number(fila) },
+        Celda.Tunel,
+      );
     }
   }
 }

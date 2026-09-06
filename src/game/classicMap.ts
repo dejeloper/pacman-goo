@@ -2,7 +2,11 @@ import { Celda } from "./mapa";
 import type { Posicion } from "./mapa";
 import { drawWall, buildBorderWalls } from "./walls";
 
-export function buildClassicMap(celdas: Celda[][], ancho: number, alto: number): void {
+export function buildClassicMap(
+  celdas: Celda[][],
+  ancho: number,
+  alto: number,
+): void {
   buildBorderWalls(celdas, ancho, alto);
 
   const medioX = Math.floor(ancho / 2);
@@ -19,27 +23,84 @@ export function buildClassicMap(celdas: Celda[][], ancho: number, alto: number):
   celdas[filaTunel][0] = Celda.Tunel;
   celdas[filaTunel][ancho - 1] = Celda.Tunel;
 
-  drawWall(celdas, { x: casaIzquierda, y: casaAbajo }, { x: casaDerecha, y: casaAbajo });
-  drawWall(celdas, { x: casaIzquierda, y: casaArriba }, { x: casaIzquierda, y: casaAbajo });
-  drawWall(celdas, { x: casaDerecha, y: casaArriba }, { x: casaDerecha, y: casaAbajo });
+  drawWall(
+    celdas,
+    { x: casaIzquierda, y: casaAbajo },
+    { x: casaDerecha, y: casaAbajo },
+  );
+  drawWall(
+    celdas,
+    { x: casaIzquierda, y: casaArriba },
+    { x: casaIzquierda, y: casaAbajo },
+  );
+  drawWall(
+    celdas,
+    { x: casaDerecha, y: casaArriba },
+    { x: casaDerecha, y: casaAbajo },
+  );
 
   // bloques tipo "peine" del lado izquierdo; cada uno se refleja al lado derecho
   const segmentos: [Posicion, Posicion][] = [
-    [{ x: 2, y: 2 }, { x: 6, y: 2 }],
-    [{ x: 9, y: 2 }, { x: 9, y: 5 }],
-    [{ x: 2, y: 5 }, { x: 2, y: 9 }],
-    [{ x: 2, y: 9 }, { x: 6, y: 9 }],
-    [{ x: 9, y: 8 }, { x: 9, y: 12 }],
-    [{ x: 12, y: 2 }, { x: 12, y: 6 }],
-    [{ x: 2, y: 13 }, { x: 6, y: 13 }],
-    [{ x: 2, y: 16 }, { x: 2, y: 20 }],
-    [{ x: 6, y: 16 }, { x: 6, y: 20 }],
-    [{ x: 2, y: 20 }, { x: 6, y: 20 }],
-    [{ x: 9, y: 16 }, { x: 9, y: 20 }],
-    [{ x: 2, y: 23 }, { x: 9, y: 23 }],
-    [{ x: 2, y: 26 }, { x: 6, y: 26 }],
-    [{ x: 9, y: 24 }, { x: 9, y: 27 }],
-    [{ x: 12, y: 23 }, { x: 12, y: 27 }],
+    [
+      { x: 2, y: 2 },
+      { x: 6, y: 2 },
+    ],
+    [
+      { x: 9, y: 2 },
+      { x: 9, y: 5 },
+    ],
+    [
+      { x: 2, y: 5 },
+      { x: 2, y: 9 },
+    ],
+    [
+      { x: 2, y: 9 },
+      { x: 6, y: 9 },
+    ],
+    [
+      { x: 9, y: 8 },
+      { x: 9, y: 12 },
+    ],
+    [
+      { x: 12, y: 2 },
+      { x: 12, y: 6 },
+    ],
+    [
+      { x: 2, y: 13 },
+      { x: 6, y: 13 },
+    ],
+    [
+      { x: 2, y: 16 },
+      { x: 2, y: 20 },
+    ],
+    [
+      { x: 6, y: 16 },
+      { x: 6, y: 20 },
+    ],
+    [
+      { x: 2, y: 20 },
+      { x: 6, y: 20 },
+    ],
+    [
+      { x: 9, y: 16 },
+      { x: 9, y: 20 },
+    ],
+    [
+      { x: 2, y: 23 },
+      { x: 9, y: 23 },
+    ],
+    [
+      { x: 2, y: 26 },
+      { x: 6, y: 26 },
+    ],
+    [
+      { x: 9, y: 24 },
+      { x: 9, y: 27 },
+    ],
+    [
+      { x: 12, y: 23 },
+      { x: 12, y: 27 },
+    ],
   ];
 
   for (const [desde, hasta] of segmentos) {

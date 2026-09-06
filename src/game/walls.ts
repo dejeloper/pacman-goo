@@ -1,5 +1,5 @@
-import {Celda} from "./mapa";
-import type {Posicion} from "./mapa";
+import { Celda } from "./mapa";
+import type { Posicion } from "./mapa";
 
 export function drawWall(
   celdas: Celda[][],
@@ -21,9 +21,23 @@ export function drawWall(
   }
 }
 
-export function buildBorderWalls(celdas: Celda[][], ancho: number, alto: number): void {
-  drawWall(celdas, {x: 0, y: 0}, {x: ancho - 1, y: 0}, Celda.Border);
-  drawWall(celdas, {x: 0, y: alto - 1}, {x: ancho - 1, y: alto - 1}, Celda.Border);
-  drawWall(celdas, {x: 0, y: 0}, {x: 0, y: alto - 1}, Celda.Border);
-  drawWall(celdas, {x: ancho - 1, y: 0}, {x: ancho - 1, y: alto - 1}, Celda.Border);
+export function buildBorderWalls(
+  celdas: Celda[][],
+  ancho: number,
+  alto: number,
+): void {
+  drawWall(celdas, { x: 0, y: 0 }, { x: ancho - 1, y: 0 }, Celda.Border);
+  drawWall(
+    celdas,
+    { x: 0, y: alto - 1 },
+    { x: ancho - 1, y: alto - 1 },
+    Celda.Border,
+  );
+  drawWall(celdas, { x: 0, y: 0 }, { x: 0, y: alto - 1 }, Celda.Border);
+  drawWall(
+    celdas,
+    { x: ancho - 1, y: 0 },
+    { x: ancho - 1, y: alto - 1 },
+    Celda.Border,
+  );
 }
