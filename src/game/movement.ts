@@ -26,6 +26,8 @@ function canMoveTo(state: Game, posicion: Posicion): boolean {
 }
 
 export function movePacman(state: Game): void {
+  if (state.estado !== "jugando") return;
+
   const { pacman } = state;
   const delta = DELTAS[pacman.direccion];
   const destino: Posicion = {
