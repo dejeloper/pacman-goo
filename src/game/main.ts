@@ -7,6 +7,7 @@ import { buildGoogleMap } from "./googleMap";
 import { listenKeyboard } from "./keyboard";
 import { startGameLoop } from "./loop";
 import { Celda } from "./mapa";
+import type { Posicion } from "./mapa";
 import type { Game } from "./game";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement;
@@ -22,6 +23,7 @@ type DisenoConfig = {
     ancho: number,
     alto: number,
     colores: Record<string, string>,
+    teletransportes: Record<string, Posicion>,
   ) => void;
 };
 
@@ -60,10 +62,11 @@ const celdas: Celda[][] = Array.from({ length: alto }, () =>
 );
 
 const colores: Record<string, string> = {};
-construirMapa(celdas, ancho, alto, colores);
+const teletransportes: Record<string, Posicion> = {};
+construirMapa(celdas, ancho, alto, colores, teletransportes);
 
 const state: Game = {
-  mapa: { ancho, alto, celdas, tamanoCelda, colores },
+  mapa: { ancho, alto, celdas, tamanoCelda, colores, teletransportes },
   pacman: {
     posicion: { x: 1, y: 1 },
     posicionAnterior: { x: 1, y: 1 },
