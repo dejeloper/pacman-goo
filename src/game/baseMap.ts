@@ -6,6 +6,8 @@ export function buildGeneralMap(
   celdas: Celda[][],
   ancho: number,
   alto: number,
+  _colores: Record<string, string>,
+  _teletransportes: Record<string, Posicion>,
 ): void {
   buildBorderWalls(celdas, ancho, alto);
 

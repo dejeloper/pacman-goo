@@ -6,19 +6,19 @@ export function buildClassicMap(
   celdas: Celda[][],
   ancho: number,
   alto: number,
+  _colores: Record<string, string>,
+  _teletransportes: Record<string, Posicion>,
 ): void {
   buildBorderWalls(celdas, ancho, alto);
 
   const medioX = Math.floor(ancho / 2);
   const medioY = Math.floor(alto / 2);
 
-  // casa de fantasmas central, con entrada abierta hacia arriba
   const casaIzquierda = medioX - 3;
   const casaDerecha = medioX + 2;
   const casaArriba = medioY - 2;
   const casaAbajo = medioY + 1;
 
-  // túnel lateral en una fila libre, arriba de la casa (a la misma altura la bloquearían sus paredes)
   const filaTunel = casaArriba - 3;
   celdas[filaTunel][0] = Celda.Tunel;
   celdas[filaTunel][ancho - 1] = Celda.Tunel;
@@ -39,7 +39,6 @@ export function buildClassicMap(
     { x: casaDerecha, y: casaAbajo },
   );
 
-  // bloques tipo "peine" del lado izquierdo; cada uno se refleja al lado derecho
   const segmentos: [Posicion, Posicion][] = [
     [
       { x: 2, y: 2 },

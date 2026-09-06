@@ -1,5 +1,6 @@
 import { Celda } from "./mapa";
-import { drawWall, buildBorderWalls } from "./walls";
+import type { Posicion } from "./mapa";
+import { drawWall, buildBorderWalls, buildTeleportPair } from "./walls";
 
 const NOMBRES_COLORES: Record<string, string> = {
   azul: "#4285f4",
@@ -14,6 +15,7 @@ export function buildGoogleMap(
   ancho: number,
   alto: number,
   colores: Record<string, string>,
+  teletransportes: Record<string, Posicion>,
 ): void {
   buildBorderWalls(celdas, ancho, alto);
   const tramosPorFila: Record<number, [number, number, string?][]> = {
@@ -235,4 +237,11 @@ export function buildGoogleMap(
       );
     }
   }
+
+  buildTeleportPair(
+    celdas,
+    teletransportes,
+    { x: 0, y: 8 },
+    { x: ancho - 1, y: 8 },
+  );
 }
