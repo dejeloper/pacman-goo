@@ -1,12 +1,18 @@
 import { Celda } from "./mapa";
 import type { Posicion } from "./mapa";
-import { drawWall, buildBorderWalls } from "./walls";
+import { buildBorderWalls } from "./walls";
+import {
+  agregarSegmento,
+  buildFromTramos,
+  mirrorTramosPorFila,
+  type Tramo,
+} from "./tramos";
 
 export function buildClassicMap(
   celdas: Celda[][],
   ancho: number,
   alto: number,
-  _colores: Record<string, string>,
+  colores: Record<string, string>,
   _teletransportes: Record<string, Posicion>,
 ): void {
   buildBorderWalls(celdas, ancho, alto);
@@ -20,21 +26,34 @@ export function buildClassicMap(
   const casaAbajo = medioY + 1;
 
   const filaTunel = casaArriba - 3;
-  celdas[filaTunel][0] = Celda.Tunel;
-  celdas[filaTunel][ancho - 1] = Celda.Tunel;
 
-  drawWall(
-    celdas,
+  const tramos: Record<number, Tramo[]> = {};
+
+  agregarSegmento(
+    tramos,
+    { x: 0, y: filaTunel },
+    { x: 0, y: filaTunel },
+    Celda.Tunel,
+  );
+  agregarSegmento(
+    tramos,
+    { x: ancho - 1, y: filaTunel },
+    { x: ancho - 1, y: filaTunel },
+    Celda.Tunel,
+  );
+
+  agregarSegmento(
+    tramos,
     { x: casaIzquierda, y: casaAbajo },
     { x: casaDerecha, y: casaAbajo },
   );
-  drawWall(
-    celdas,
+  agregarSegmento(
+    tramos,
     { x: casaIzquierda, y: casaArriba },
     { x: casaIzquierda, y: casaAbajo },
   );
-  drawWall(
-    celdas,
+  agregarSegmento(
+    tramos,
     { x: casaDerecha, y: casaArriba },
     { x: casaDerecha, y: casaAbajo },
   );
@@ -103,11 +122,8 @@ export function buildClassicMap(
   ];
 
   for (const [desde, hasta] of segmentos) {
-    drawWall(celdas, desde, hasta);
-    drawWall(
-      celdas,
-      { x: ancho - 1 - desde.x, y: desde.y },
-      { x: ancho - 1 - hasta.x, y: hasta.y },
-    );
+    agregarSegmento(tramos, desde, hasta);
   }
+
+  buildFromTramos(celdas, colores, mirrorTramosPorFila(tramos, ancho));
 }
