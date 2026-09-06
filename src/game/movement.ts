@@ -23,7 +23,9 @@ function canMoveTo(state: Game, posicion: Posicion): boolean {
   }
 
   const celda = mapa.celdas[posicion.y][posicion.x];
-  return celda !== Celda.Pared && celda !== Celda.Border;
+  return (
+    celda !== Celda.Pared && celda !== Celda.Border && celda !== Celda.Tunel
+  );
 }
 
 function destinationAt(posicion: Posicion, direccion: Direccion): Posicion {
@@ -67,13 +69,28 @@ export function movePacman(state: Game): void {
   if (canMoveTo(state, destinoGiro)) {
     pacman.direccion = pacman.direccionSiguiente;
     pacman.posicion = destinoGiro;
+    applyTeleport(state);
     return;
   }
 
   const destinoRecto = destinationAt(pacman.posicion, pacman.direccion);
   if (canMoveTo(state, destinoRecto)) {
     pacman.posicion = destinoRecto;
+    applyTeleport(state);
   }
+}
+
+function applyTeleport(state: Game): void {
+  const { pacman, mapa } = state;
+  const celda = mapa.celdas[pacman.posicion.y][pacman.posicion.x];
+  if (celda !== Celda.Transportador) return;
+
+  const destino =
+    mapa.teletransportes[`${pacman.posicion.x}-${pacman.posicion.y}`];
+  if (!destino) return;
+
+  pacman.posicion = destino;
+  pacman.posicionAnterior = destino;
 }
 
 const VALOR_PUNTO = 1;
