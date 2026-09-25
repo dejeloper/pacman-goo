@@ -17,6 +17,8 @@ export function listenKeyboard(state: Game): void {
   document.addEventListener("keydown", (evento) => {
     const direccion = TECLAS[evento.key];
     if (!direccion) return;
+    evento.preventDefault();
+    if (state.estado !== "jugando") return;
     if (!canMoveTowards(state, direccion)) return;
 
     state.pacman.direccionSiguiente = direccion;

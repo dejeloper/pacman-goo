@@ -12,32 +12,54 @@ import "../styles/global.css";
     <title>Pacman Goo</title>
   </head>
   <body class="flex min-h-screen flex-col items-center gap-4 bg-black">
-    <nav class="flex w-full items-center justify-between gap-2 border-b border-neutral-800 bg-neutral-900 px-4 py-2">
+    <nav
+      class="flex w-full items-center justify-between gap-2 border-b border-neutral-800 bg-neutral-900 px-4 py-2"
+    >
       <div class="flex gap-2">
-        <button id="btn-play" class="rounded bg-neutral-800 px-3 py-1 text-white">Play</button>
-        <button id="btn-menu" class="rounded bg-neutral-800 px-3 py-1 text-white">Menu</button>
-        <button id="btn-pausa" class="rounded bg-neutral-800 px-3 py-1 text-white">Pausa</button>
-        <button id="btn-verlog" class="rounded bg-neutral-800 px-3 py-1 text-white">Ver log</button>
+        <button
+          id="btn-play"
+          class="rounded bg-yellow-400 px-3 py-1 font-bold text-black"
+          >Play</button
+        >
+        <button
+          id="btn-menu"
+          class="rounded bg-neutral-800 px-3 py-1 text-white">Restart</button
+        >
+        <button
+          id="btn-pausa"
+          class="rounded bg-neutral-800 px-3 py-1 text-white">Pause</button
+        >
+        <select
+          id="map-select"
+          aria-label="Choose map"
+          class="rounded bg-neutral-800 px-2 py-1 text-white"
+        >
+          <option value="google">Google</option>
+          <option value="base">Classic</option>
+          <option value="classic">Wide</option>
+        </select>
       </div>
 
       <div class="flex gap-4 font-mono text-sm text-white">
         <span>Puntaje: <span id="puntaje-valor">0</span></span>
         <span>Vidas: <span id="vidas-valor">3</span></span>
+        <span>Nivel: <span id="nivel-valor">1</span></span>
       </div>
     </nav>
 
-    <div class="flex flex-1 flex-col items-center justify-center gap-4">
-      <canvas id="game" width="1200" height="900"></canvas>
-    </div>
-
     <div
-      id="debug-modal"
-      hidden
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-      <pre
-        id="debug"
-        class="max-h-[80vh] w-full max-w-2xl overflow-auto rounded bg-neutral-900 p-4 font-mono text-xs text-green-400">
-      </pre>
+      class="relative flex flex-1 flex-col items-center justify-center gap-4 p-4"
+    >
+      <canvas
+        id="game"
+        width="1200"
+        height="900"
+        class="max-h-[calc(100vh-7rem)] max-w-full"></canvas>
+      <div
+        id="game-message"
+        class="pointer-events-none absolute inset-0 flex items-center justify-center text-center font-mono text-3xl font-black text-yellow-300 drop-shadow-[0_2px_2px_#000]"
+      >
+      </div>
     </div>
 
     <script>

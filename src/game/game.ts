@@ -14,4 +14,9 @@ export interface Game {
   vidas: Vidas;
   nivel: Nivel;
   estado: Estado;
+  pacmanStart: import("./mapa").Posicion;
+  invulnerableTicks: number;
+  powerTicks: number;
+  deathTicks: number;
+  tick: number;
 }

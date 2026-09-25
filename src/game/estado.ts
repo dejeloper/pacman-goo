@@ -1,1 +1,1 @@
-export type Estado = "menu" | "jugando" | "pausa" | "victoria" | "derrota";
+export type Estado = "menu" | "jugando" | "pausa" | "muerte" | "victoria" | "derrota";

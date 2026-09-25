@@ -1,5 +1,4 @@
 import { render } from "./render";
-import { renderDebug, toggleDebugPanel } from "./debug";
 import { renderHud } from "./hud";
 import { buildGeneralMap } from "./baseMap";
 import { buildClassicMap } from "./classicMap";
@@ -9,6 +8,7 @@ import { startGameLoop } from "./loop";
 import { Celda } from "./mapa";
 import type { Posicion } from "./mapa";
 import type { Game } from "./game";
+import { createGhosts, consumeInitialPoint } from "./rules";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d");
@@ -48,7 +48,8 @@ const disenos: Record<Diseno, DisenoConfig> = {
   },
 };
 
-const diseno: Diseno = "google";
+const requestedMap = new URLSearchParams(location.search).get("map");
+const diseno: Diseno = requestedMap === "base" || requestedMap === "classic" ? requestedMap : "google";
 const { anchoCeldas, altoCeldas, tamanoCelda, construirMapa } = disenos[diseno];
 
 canvas.width = anchoCeldas * tamanoCelda;
@@ -65,44 +66,106 @@ const colores: Record<string, string> = {};
 const teletransportes: Record<string, Posicion> = {};
 construirMapa(celdas, ancho, alto, colores, teletransportes);
 
+function isOpen(position: Posicion): boolean {
+  const cell = celdas[position.y]?.[position.x];
+  return cell !== undefined && cell !== Celda.Pared && cell !== Celda.Border && cell !== Celda.Tunel;
+}
+
+function nearestOpen(origin: Posicion, used: Posicion[] = []): Posicion {
+  for (let radius = 0; radius < Math.max(ancho, alto); radius++) {
+    for (let y = Math.max(1, origin.y - radius); y < Math.min(alto - 1, origin.y + radius + 1); y++) {
+      for (let x = Math.max(1, origin.x - radius); x < Math.min(ancho - 1, origin.x + radius + 1); x++) {
+        if (Math.abs(x - origin.x) + Math.abs(y - origin.y) !== radius) continue;
+        if (isOpen({ x, y }) && !used.some((item) => item.x === x && item.y === y)) return { x, y };
+      }
+    }
+  }
+  return { x: 1, y: 1 };
+}
+
+const pacmanStart = nearestOpen({ x: 1, y: 1 });
+const ghostStarts: Posicion[] = [];
+for (let index = 0; index < 4; index++) {
+  ghostStarts.push(nearestOpen({ x: Math.floor(ancho / 2), y: Math.floor(alto / 2) }, ghostStarts));
+}
+
+const pointPositions: Posicion[] = [];
+for (let y = 0; y < alto; y++) for (let x = 0; x < ancho; x++) {
+  if (celdas[y][x] === Celda.Punto || celdas[y][x] === Celda.PuntoGrande) pointPositions.push({ x, y });
+}
+const powerAnchors: Posicion[] = [
+  { x: 1, y: 1 },
+  { x: Math.floor(ancho / 2), y: 1 },
+  { x: ancho - 2, y: 1 },
+  { x: ancho - 2, y: Math.floor(alto / 2) },
+  { x: ancho - 2, y: alto - 2 },
+  { x: Math.floor(ancho / 2), y: alto - 2 },
+  { x: 1, y: alto - 2 },
+  { x: 1, y: Math.floor(alto / 2) },
+];
+const powerPositions: Posicion[] = [];
+
+for (const anchor of powerAnchors) {
+  const powerPosition = nearestOpen(anchor, powerPositions);
+  if (powerPosition.x === pacmanStart.x && powerPosition.y === pacmanStart.y) continue;
+  powerPositions.push(powerPosition);
+}
+
+for (const powerPosition of powerPositions.slice(0, 7)) {
+  celdas[powerPosition.y][powerPosition.x] = Celda.PuntoGrande;
+}
+
 const state: Game = {
   mapa: { ancho, alto, celdas, tamanoCelda, colores, teletransportes },
   pacman: {
-    posicion: { x: 1, y: 1 },
-    posicionAnterior: { x: 1, y: 1 },
+    posicion: { ...pacmanStart },
+    posicionAnterior: { ...pacmanStart },
     direccion: "derecha",
     direccionSiguiente: "derecha",
     velocidad: 0,
   },
-  fantasmas: [],
-  puntos: { total: 0, posicionesRestantes: [] },
+  fantasmas: createGhosts(ghostStarts),
+  puntos: { total: 0, posicionesRestantes: pointPositions },
   vidas: { actuales: 3, maximas: 3 },
   nivel: { actual: 1, velocidadFantasmas: 0 },
-  estado: "jugando",
+  estado: "menu",
+  pacmanStart,
+  invulnerableTicks: 10,
+  powerTicks: 0,
+  deathTicks: 0,
+  tick: 0,
 };
+
+consumeInitialPoint(state);
 
 if (ctx) {
   render(ctx, state);
-  renderDebug(state);
   renderHud(state);
 
   listenKeyboard(state);
 
   startGameLoop(state, (progreso) => {
     render(ctx, state, progreso);
-    renderDebug(state);
     renderHud(state);
   });
 
-  document.getElementById("btn-verlog")?.addEventListener("click", () => {
-    toggleDebugPanel();
-    render(ctx, state);
-    renderDebug(state);
+  document.getElementById("btn-play")?.addEventListener("click", () => {
+    if (state.estado === "menu" || state.estado === "pausa") state.estado = "jugando";
   });
+  document.getElementById("btn-pausa")?.addEventListener("click", () => {
+    if (state.estado === "jugando") state.estado = "pausa";
+    else if (state.estado === "pausa") state.estado = "jugando";
+  });
+  document.getElementById("btn-menu")?.addEventListener("click", () => location.reload());
 
-  const debugModal = document.getElementById("debug-modal");
-  debugModal?.addEventListener("click", (evento) => {
-    if (evento.target !== debugModal) return;
-    toggleDebugPanel();
-  });
+  const mapSelect = document.getElementById("map-select") as HTMLSelectElement | null;
+  if (mapSelect) {
+    mapSelect.value = diseno;
+    mapSelect.addEventListener("change", () => {
+      const url = new URL(location.href);
+      url.searchParams.set("map", mapSelect.value);
+      location.href = url.toString();
+    });
+  }
+
 }

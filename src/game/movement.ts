@@ -10,7 +10,7 @@ const DELTAS: Record<Direccion, Posicion> = {
   derecha: { x: 1, y: 0 },
 };
 
-function canMoveTo(state: Game, posicion: Posicion): boolean {
+export function canMoveTo(state: Game, posicion: Posicion, allowTunnel = false): boolean {
   const { mapa } = state;
 
   if (
@@ -23,9 +23,8 @@ function canMoveTo(state: Game, posicion: Posicion): boolean {
   }
 
   const celda = mapa.celdas[posicion.y][posicion.x];
-  return (
-    celda !== Celda.Pared && celda !== Celda.Border && celda !== Celda.Tunel
-  );
+  return celda !== Celda.Pared && celda !== Celda.Border &&
+    (allowTunnel || celda !== Celda.Tunel);
 }
 
 function destinationAt(posicion: Posicion, direccion: Direccion): Posicion {
@@ -61,8 +60,6 @@ export function movePacman(state: Game): void {
 
   const { pacman } = state;
 
-  earnPoint(state, pacman.posicion);
-
   pacman.posicionAnterior = pacman.posicion;
 
   const destinoGiro = destinationAt(pacman.posicion, pacman.direccionSiguiente);
@@ -70,6 +67,7 @@ export function movePacman(state: Game): void {
     pacman.direccion = pacman.direccionSiguiente;
     pacman.posicion = destinoGiro;
     applyTeleport(state);
+    earnPoint(state, pacman.posicion);
     return;
   }
 
@@ -77,6 +75,7 @@ export function movePacman(state: Game): void {
   if (canMoveTo(state, destinoRecto)) {
     pacman.posicion = destinoRecto;
     applyTeleport(state);
+    earnPoint(state, pacman.posicion);
   }
 }
 
@@ -98,7 +97,7 @@ const VALOR_PUNTO_GRANDE = 10;
 export const VALOR_FRUTA = 50;
 export const VALOR_FANTASMA = 100;
 
-function earnPoint(state: Game, posicion: Posicion): void {
+export function earnPoint(state: Game, posicion: Posicion): void {
   const { mapa, puntos } = state;
   const celda = mapa.celdas[posicion.y][posicion.x];
 
@@ -106,5 +105,9 @@ function earnPoint(state: Game, posicion: Posicion): void {
 
   puntos.total +=
     celda === Celda.PuntoGrande ? VALOR_PUNTO_GRANDE : VALOR_PUNTO;
+  if (celda === Celda.PuntoGrande) state.powerTicks = 30;
   mapa.celdas[posicion.y][posicion.x] = Celda.Vacia;
+  puntos.posicionesRestantes = puntos.posicionesRestantes.filter(
+    (punto) => punto.x !== posicion.x || punto.y !== posicion.y,
+  );
 }
